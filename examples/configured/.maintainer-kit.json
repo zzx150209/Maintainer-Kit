@@ -1,0 +1,4 @@
+{
+  "ignore": ["conduct", "security"],
+  "paths": {"readme": ["说明.md"]}
+}

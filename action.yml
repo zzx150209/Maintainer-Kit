@@ -1,0 +1,29 @@
+name: Maintainer Kit
+description: Offline repository metadata checks with configurable paths and gradual-adoption baselines
+inputs:
+  repository-path:
+    description: Directory to scan
+    default: '.'
+  fail-on-missing:
+    description: Fail on any missing enabled check (true or false)
+    default: 'false'
+  baseline:
+    description: Baseline JSON path relative to the scanned directory
+    default: ''
+  ignore:
+    description: Comma-separated check IDs to skip
+    default: ''
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - shell: bash
+      env:
+        MAINTAINER_KIT_ACTION_PATH: ${{ github.action_path }}
+        INPUT_REPOSITORY_PATH: ${{ inputs.repository-path }}
+        INPUT_FAIL_ON_MISSING: ${{ inputs.fail-on-missing }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_IGNORE: ${{ inputs.ignore }}
+      run: python3 "$MAINTAINER_KIT_ACTION_PATH/scripts/run_action.py"

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "repository": ".",
+  "present": 1,
+  "total": 8,
+  "skipped": 0,
+  "checks": [
+    {
+      "id": "readme",
+      "status": "present",
+      "evidence": [
+        "README.md"
+      ],
+      "suggestion": "Add a README explaining purpose, installation and one runnable example."
+    },
+    {
+      "id": "license",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Choose a license you have authority to grant and add its full text."
+    },
+    {
+      "id": "contributing",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Document local setup, checks and how to propose changes."
+    },
+    {
+      "id": "security",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Document a private vulnerability reporting channel and supported versions."
+    },
+    {
+      "id": "conduct",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Document expected conduct and an actual moderation contact."
+    },
+    {
+      "id": "pull_request_template",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Add a pull request template asking for context and verification."
+    },
+    {
+      "id": "issue_templates",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Add a bug report or feature request template."
+    },
+    {
+      "id": "ci",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Add CI that runs the project's documented checks."
+    }
+  ],
+  "limitation": "File presence only; content quality, security, adoption and program eligibility are not assessed."
+}

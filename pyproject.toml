@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "maintainer-kit-local"
+version = "0.2.0"
+description = "Offline, evidence-based repository onboarding checks for open-source maintainers"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[project.scripts]
+maintainer-kit = "maintainer_kit.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.urls]
+Repository = "https://github.com/zzx150209/Maintainer-Kit"
+Issues = "https://github.com/zzx150209/Maintainer-Kit/issues"
