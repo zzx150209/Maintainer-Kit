@@ -60,4 +60,4 @@ python3 -m pip install -e .
 python3 -m unittest discover -s tests -v
 ```
 
-欢迎提供最小复现案例、真实项目的使用反馈或提交修复。项目采用 MIT 许可证，开发中使用了 Codex 辅助。当前不宣称已有外部用户或生态影响。
+欢迎提供最小复现案例、真实项目的使用反馈或提交修复。项目采用 MIT 许可证.
