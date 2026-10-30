@@ -8,6 +8,32 @@ Find missing metadata, see the evidence behind every result, and fail CI only wh
 
 Status: **0.3.0, early release**. A presence check does not establish document quality, legal compliance, security or funding eligibility. No external adoption is claimed.
 
+## See it in 30 seconds
+
+The same sample repository, with and without a local shared-community checkout:
+
+```text
+$ maintainer-kit examples/minimal --portable
+Found 1 of 8 enabled metadata items (0 skipped).
+[x] readme                 Evidence: README.md
+[ ] contributing           Missing contribution guide
+[ ] security               Missing security instructions
+
+$ maintainer-kit examples/minimal --defaults-directory examples/shared-community --portable
+Found 3 of 8 enabled metadata items (0 skipped).
+[x] readme                 Evidence: README.md
+[x] contributing           Evidence (defaults): CONTRIBUTING.md
+[x] security               Evidence (defaults): SECURITY.md
+```
+
+Excerpt from real output, with other checks omitted and formatting shortened. [Run the complete demo](docs/demo.md). Both directories are synthetic fixtures, not external adoption examples.
+
+## Add it to GitHub in one file
+
+Copy the [complete reporting workflow](examples/workflows/maintainer-kit.yml) to `.github/workflows/maintainer-kit.yml` in your repository, commit it, then open the Actions job summary. By default missing metadata is reported without blocking your existing workflow.
+
+For gradual enforcement, [create a baseline](docs/quickstart-actions.md) and use the [complete regression workflow](examples/workflows/maintainer-kit-baseline.yml). Both examples pin Maintainer Kit to the reviewed v0.3.0 commit.
+
 ## Try it
 
 Python 3.10 or newer:
@@ -92,24 +118,9 @@ By default reports contain the absolute local directory. Use `--portable` to rep
 
 ## GitHub Actions
 
-After checking out your repository:
+Use the complete [reporting](examples/workflows/maintainer-kit.yml) or [baseline](examples/workflows/maintainer-kit-baseline.yml) workflow. See the [step-by-step setup](docs/quickstart-actions.md) and [all inputs](docs/github-action.md).
 
-```yaml
-- uses: actions/checkout@v4
-- uses: zzx150209/Maintainer-Kit@main
-  with:
-    fail-on-missing: 'true'
-```
-
-For gradual adoption, commit a portable JSON baseline first:
-
-```yaml
-- uses: zzx150209/Maintainer-Kit@main
-  with:
-    baseline: .github/maintainer-baseline.json
-```
-
-For production, pin external actions to a reviewed commit SHA. This composite action sets up Python 3.12, prints a portable Markdown report, and adds it to the job summary. It has no need for a GitHub token and does not comment on issues or change repository files. [Inputs and integration details](docs/github-action.md).
+The action sets up Python 3.12, prints a portable Markdown report and adds it to the job summary. It does not need an API key or GitHub token input. The examples grant only `contents: read`. For production, review and pin external dependencies to commit SHAs; the Maintainer Kit reference is already pinned.
 
 ## Development
 

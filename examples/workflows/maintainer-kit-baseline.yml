@@ -1,0 +1,20 @@
+name: Repository onboarding regression check
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out your repository
+        uses: actions/checkout@v4
+      - name: Fail only for newly missing items
+        uses: zzx150209/Maintainer-Kit@b488f22f87c16bf28891184794c8cc2cc6a34fe8 # v0.3.0
+        with:
+          baseline: .github/maintainer-baseline.json

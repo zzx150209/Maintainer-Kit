@@ -6,6 +6,32 @@
 
 当前版本 **0.3.0，早期版本**。不需要 API Key，没有运行时第三方依赖，不上传仓库内容，也不执行被检查项目的代码。检查结果只反映文件是否存在且非空，不代表内容合格、安全或满足资助申请条件。
 
+## 半分钟看懂
+
+同一个示例项目，分别检查项目文件，以及项目文件加组织共享文档：
+
+```text
+$ maintainer-kit examples/minimal --portable
+Found 1 of 8 enabled metadata items (0 skipped).
+[x] readme                 Evidence: README.md
+[ ] contributing          缺少贡献指南
+[ ] security              缺少安全说明
+
+$ maintainer-kit examples/minimal --defaults-directory examples/shared-community --portable
+Found 3 of 8 enabled metadata items (0 skipped).
+[x] readme                 Evidence: README.md
+[x] contributing           Evidence (defaults): CONTRIBUTING.md
+[x] security               Evidence (defaults): SECURITY.md
+```
+
+以上是实际输出的节选，省略其余检查项并简化了排版。[查看完整可复现演示](docs/demo.md)。两个示例目录均为项目内的演示文件，不代表外部使用案例。
+
+## 接入 GitHub：复制一个文件
+
+将 [完整报告配置](examples/workflows/maintainer-kit.yml) 保存为你项目的 `.github/workflows/maintainer-kit.yml`，提交后在 Actions 中查看报告。默认只报告，不因文档缺项阻止现有工作流。
+
+想只拦截新增问题，可以按 [接入指南](docs/quickstart-actions.md) 创建基线，再使用 [基线检查配置](examples/workflows/maintainer-kit-baseline.yml)。
+
 ## 快速运行
 
 需要 Python 3.10 及以上版本：

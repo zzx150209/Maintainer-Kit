@@ -1,0 +1,18 @@
+name: Repository onboarding report
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out your repository
+        uses: actions/checkout@v4
+      - name: Generate onboarding report
+        uses: zzx150209/Maintainer-Kit@b488f22f87c16bf28891184794c8cc2cc6a34fe8 # v0.3.0
