@@ -7,6 +7,9 @@ inputs:
   fail-on-missing:
     description: Fail on any missing enabled check (true or false)
     default: 'false'
+  defaults-directory:
+    description: Local shared community-file checkout, relative to repository-path
+    default: ''
   baseline:
     description: Baseline JSON path relative to the scanned directory
     default: ''
@@ -24,6 +27,7 @@ runs:
         MAINTAINER_KIT_ACTION_PATH: ${{ github.action_path }}
         INPUT_REPOSITORY_PATH: ${{ inputs.repository-path }}
         INPUT_FAIL_ON_MISSING: ${{ inputs.fail-on-missing }}
+        INPUT_DEFAULTS_DIRECTORY: ${{ inputs.defaults-directory }}
         INPUT_BASELINE: ${{ inputs.baseline }}
         INPUT_IGNORE: ${{ inputs.ignore }}
       run: python3 "$MAINTAINER_KIT_ACTION_PATH/scripts/run_action.py"

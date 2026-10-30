@@ -6,6 +6,7 @@ Inputs:
 
 - `repository-path`: directory to inspect, default `.` relative to the job working directory.
 - `fail-on-missing`: `true` or `false`, default `false`.
+- `defaults-directory`: optional local shared checkout, relative to `repository-path` unless absolute. The action never downloads it.
 - `baseline`: optional saved JSON report path, relative to `repository-path` unless absolute.
 - `ignore`: comma-separated stable check IDs, default empty.
 

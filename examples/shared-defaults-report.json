@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "repository": ".",
+  "present": 3,
+  "total": 8,
+  "skipped": 0,
+  "checks": [
+    {
+      "id": "readme",
+      "status": "present",
+      "evidence": [
+        "README.md"
+      ],
+      "suggestion": "Add a README explaining purpose, installation and one runnable example.",
+      "source": "repository"
+    },
+    {
+      "id": "license",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Choose a license you have authority to grant and add its full text.",
+      "source": null
+    },
+    {
+      "id": "contributing",
+      "status": "present",
+      "evidence": [
+        "CONTRIBUTING.md"
+      ],
+      "suggestion": "Document local setup, checks and how to propose changes.",
+      "source": "defaults"
+    },
+    {
+      "id": "security",
+      "status": "present",
+      "evidence": [
+        "SECURITY.md"
+      ],
+      "suggestion": "Document a private vulnerability reporting channel and supported versions.",
+      "source": "defaults"
+    },
+    {
+      "id": "conduct",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Document expected conduct and an actual moderation contact.",
+      "source": null
+    },
+    {
+      "id": "pull_request_template",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Add a pull request template asking for context and verification.",
+      "source": null
+    },
+    {
+      "id": "issue_templates",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Add a bug report or feature request template.",
+      "source": null
+    },
+    {
+      "id": "ci",
+      "status": "missing",
+      "evidence": [],
+      "suggestion": "Add CI that runs the project's documented checks.",
+      "source": null
+    }
+  ],
+  "limitation": "File presence only; content quality, security, adoption and program eligibility are not assessed.",
+  "defaults_directory": "@defaults"
+}

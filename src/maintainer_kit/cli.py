@@ -17,6 +17,7 @@ DIRECTORY_RULES = (
     ("ci", ".github/workflows", "Add CI that runs the project's documented checks."),
 )
 CHECK_IDS = frozenset(rule[0] for rule in RULES + DIRECTORY_RULES)
+DEFAULT_CHECK_IDS = frozenset({"contributing", "security", "conduct", "pull_request_template", "issue_templates"})
 LIMITATION = "File presence only; content quality, security, adoption and program eligibility are not assessed."
 
 
@@ -71,10 +72,22 @@ def load_config(root, filename=None):
     return ignored, paths
 
 
-def scan(directory, *, ignored=(), extra_paths=None, portable=False):
+def scan(directory, *, ignored=(), extra_paths=None, portable=False, defaults_directory=None):
     root = Path(directory).resolve()
     if not root.is_dir():
         raise ValueError(f"Not a directory: {root}")
+    defaults_root = None
+    fallback = {}
+    if defaults_directory is not None:
+        defaults_root = Path(defaults_directory).resolve()
+        if not defaults_root.is_dir():
+            raise ValueError(f"Not a defaults directory: {defaults_root}")
+        shared_paths = {"pull_request_template": ["PULL_REQUEST_TEMPLATE.md", "pull_request_template.md"]}
+        issue_folder = defaults_root / "ISSUE_TEMPLATE"
+        if issue_folder.resolve().is_relative_to(defaults_root):
+            shared_paths["issue_templates"] = [p.relative_to(defaults_root).as_posix() for p in issue_folder.glob("*")
+                if p.suffix.lower() in {".md", ".yml", ".yaml"} and p.name.lower() not in {"config.yml", "config.yaml"}]
+        fallback = {c["id"]: c for c in scan(defaults_root, extra_paths=shared_paths)["checks"]}
     ignored = validate_ids(list(ignored), "ignore")
     extra_paths = extra_paths or {}
     checks = []
@@ -96,11 +109,19 @@ def scan(directory, *, ignored=(), extra_paths=None, portable=False):
                 if contained_file(root, path):
                     evidence.add(evidence_path(root, path))
         status = "skipped" if ident in ignored else "present" if evidence else "missing"
-        checks.append(dict(id=ident, status=status, evidence=sorted(evidence), suggestion=advice))
-    return dict(schema_version=1, repository="." if portable else str(root),
+        check = dict(id=ident, status=status, evidence=sorted(evidence), suggestion=advice)
+        if defaults_root is not None:
+            check["source"] = "repository" if evidence else None
+            if status == "missing" and ident in DEFAULT_CHECK_IDS and fallback[ident]["status"] == "present":
+                check.update(status="present", evidence=fallback[ident]["evidence"], source="defaults")
+        checks.append(check)
+    report = dict(schema_version=1, repository="." if portable else str(root),
                 present=sum(c["status"] == "present" for c in checks),
                 total=sum(c["status"] != "skipped" for c in checks),
                 skipped=sum(c["status"] == "skipped" for c in checks), checks=checks, limitation=LIMITATION)
+    if defaults_root is not None:
+        report["defaults_directory"] = "@defaults" if portable else str(defaults_root)
+    return report
 
 
 def load_baseline(filename):
@@ -123,7 +144,7 @@ def markdown(report):
     for check in report["checks"]:
         mark = "x" if check["status"] == "present" else "-" if check["status"] == "skipped" else " "
         lines.append(f"- [{mark}] {check['id']}")
-        detail = "Skipped by configuration" if check["status"] == "skipped" else "Evidence: " + ", ".join(check["evidence"]) if check["evidence"] else check["suggestion"]
+        detail = "Skipped by configuration" if check["status"] == "skipped" else ("Evidence (defaults): " if check.get("source") == "defaults" else "Evidence: ") + ", ".join(check["evidence"]) if check["evidence"] else check["suggestion"]
         lines.append("  " + detail)
     return "\n".join(lines) + "\n"
 
@@ -131,8 +152,9 @@ def markdown(report):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", nargs="?", default=".")
-    parser.add_argument("--version", action="version", version="maintainer-kit 0.2.0")
+    parser.add_argument("--version", action="version", version="maintainer-kit 0.3.0")
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
+    parser.add_argument("--defaults-directory", help="Local checkout of shared community files; never downloaded automatically")
     parser.add_argument("--config", help="Explicit JSON config path; must be inside the scanned directory")
     parser.add_argument("--ignore", action="append", default=[], metavar="CHECK_ID", help="Skip a check (repeatable)")
     parser.add_argument("--portable", action="store_true", help="Replace the local repository path with '.' in reports")
@@ -146,7 +168,7 @@ def main(argv=None):
             raise ValueError(f"Not a directory: {root}")
         ignored, paths = load_config(root, args.config)
         ignored |= validate_ids(args.ignore, "--ignore")
-        report = scan(root, ignored=ignored, extra_paths=paths, portable=args.portable)
+        report = scan(root, ignored=ignored, extra_paths=paths, portable=args.portable, defaults_directory=args.defaults_directory)
         missing = {c["id"] for c in report["checks"] if c["status"] == "missing"}
         if args.baseline:
             report["regressions"] = sorted(missing - load_baseline(args.baseline))

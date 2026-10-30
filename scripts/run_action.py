@@ -17,6 +17,9 @@ def run():
         print("baseline and fail-on-missing cannot be used together", file=sys.stderr)
         return 2
     args = [sys.executable, "-m", "maintainer_kit", str(root), "--portable"]
+    defaults = os.environ.get("INPUT_DEFAULTS_DIRECTORY", "")
+    if defaults:
+        args += ["--defaults-directory", str(root / defaults)]
     if strict == "true":
         args.append("--fail-on-missing")
     if baseline:

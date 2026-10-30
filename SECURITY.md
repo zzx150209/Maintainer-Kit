@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Only the latest 0.2.x revision is maintained at this early stage. Fixes are delivered in the repository; there is no support SLA.
+Only the latest 0.3.x revision is maintained at this early stage. Fixes are delivered in the repository; there is no support SLA.
 
 ## Reporting
 

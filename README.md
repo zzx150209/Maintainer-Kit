@@ -6,7 +6,7 @@
 
 Find missing metadata, see the evidence behind every result, and fail CI only when something regresses. No API key, network requests or runtime dependencies. Scanned repository code is never executed.
 
-Status: **0.2.0, early release**. A presence check does not establish document quality, legal compliance, security or funding eligibility. No external adoption is claimed.
+Status: **0.3.0, early release**. A presence check does not establish document quality, legal compliance, security or funding eligibility. No external adoption is claimed.
 
 ## Try it
 
@@ -50,6 +50,20 @@ maintainer-kit /path/to/repo --fail-on-missing
 
 The normal scan exits successfully even when items are missing. `--fail-on-missing` and `--baseline` are mutually exclusive. Exit codes: **0** completed/passed gate; **1** missing items or baseline regressions; **2** invalid input or scan error. A baseline compares stable check IDs; evidence path changes are not regressions while a check remains satisfied. Newly enabled checks that were skipped in the baseline count as regressions if missing.
 
+## Shared community files (0.3.0)
+
+If your organization keeps shared community files in a separate checkout:
+
+```sh
+maintainer-kit /path/to/repo --defaults-directory /path/to/shared-checkout --portable
+```
+
+Repository-local evidence (including custom paths) takes precedence. Missing contribution, security, conduct, pull-request and issue-template checks can use shared files. README, license and CI checks always refer to the scanned repository. Shared files may use the same built-in layout or root `PULL_REQUEST_TEMPLATE.md` / `ISSUE_TEMPLATE/` in a `.github` repository checkout. Shared configuration files are not loaded.
+
+Reports identify the source explicitly. Portable output labels the shared root `@defaults`, hiding its absolute path. Check out shared files yourself: no downloads or GitHub API calls occur. This is an explicit local fallback, not a complete simulation of GitHub's inheritance rules. Empty local files do not satisfy a check and can fall back to shared evidence.
+
+Use the same defaults option when creating and comparing baselines. A check switching from local to shared evidence still counts as present; losing both sources is a regression. See [report format](docs/report-format.md).
+
 ## Configuration
 
 Create `.maintainer-kit.json` in the scanned directory:
@@ -72,7 +86,7 @@ Stable IDs: `readme`, `license`, `contributing`, `security`, `conduct`, `pull_re
 
 Built-in detection covers common root README/license names; root, `.github/` or `docs/` contribution/security/conduct documents; `.github/PULL_REQUEST_TEMPLATE.md` or its lowercase variant; immediate Markdown/YAML issue templates; immediate YAML GitHub workflows; and `.gitlab-ci.yml`. Issue-template `config.yml` alone does not count as a template. A zero-byte file does not count. Whitespace-only files currently do count.
 
-GitHub organization defaults, nested templates and automatic language detection are not supported. Supply explicit custom paths when needed. Existing YAML/Markdown contents are not validated. A symlink into the repository can count; links outside it cannot. This is not a sandbox for concurrently modified or hostile filesystems.
+Automatic fetching of GitHub organization defaults, nested templates and automatic language detection are not supported. Supply explicit custom paths when needed. Existing YAML/Markdown contents are not validated. A symlink into the repository can count; links outside it cannot. This is not a sandbox for concurrently modified or hostile filesystems.
 
 By default reports contain the absolute local directory. Use `--portable` to replace that field with `.`. Evidence still names repository-relative files; review filenames before publishing. See [JSON format](docs/report-format.md).
 
@@ -109,6 +123,6 @@ CI covers supported Python versions on Linux and a Python 3.12 smoke suite on ma
 
 ## Project direction
 
-The near-term goal is to make onboarding gaps visible without noisy all-or-nothing checks. Next work includes organization-level defaults, nested templates and richer document validation. See [roadmap](docs/roadmap.md), [changelog](CHANGELOG.md) and [contribution guide](CONTRIBUTING.md).
+The near-term goal is to make onboarding gaps visible without noisy all-or-nothing checks. Next work includes nested templates and richer document validation. See [roadmap](docs/roadmap.md), [changelog](CHANGELOG.md) and [contribution guide](CONTRIBUTING.md).
 
 MIT licensed. Built with assistance from Codex; changes remain subject to maintainer review and automated tests.
